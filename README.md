@@ -9,5 +9,6 @@ It is a combined project of computer science and earth science department. The m
 Our first task was to implement the shortest path algorithm in parallel programming using nvgraph. 
 
 ## Task 2
-
+Taking input in desired form and giving output in desired form.
+## Task 3
 Finding the error in the shortest distance of initail matrix and actual matrix.
