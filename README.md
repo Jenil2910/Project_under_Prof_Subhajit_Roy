@@ -1,4 +1,4 @@
-# Project_under_Prof_Subhajit_Roy
+# Project under Prof Subhajit Roy
 
 ## Description
 
