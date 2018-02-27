@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-#define _N 2    //Number of rows
-#define _M 2    //Number of columns
+#define _N 100    //Number of rows
+#define _M 100    //Number of columns
 using namespace std;
 
 int main() {

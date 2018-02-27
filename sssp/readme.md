@@ -7,7 +7,6 @@ sssp.out is the executable file.
 if we want to provide different input, put it into a .txt file and then run:
 cat <input>.txt|./sssp.out
 
-I have not taken the input according to the matrix you provided, but instead used an Adjacency Matrix.
-Sample_output is present in the code.
 ### input in slowness matrix is taken in input.cpp and get converted in required input format for sssp.cu
+In the input file _N, _M are number of rows and columns 
 
