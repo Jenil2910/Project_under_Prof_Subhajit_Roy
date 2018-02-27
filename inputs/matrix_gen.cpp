@@ -4,13 +4,13 @@
 
 using namespace std;
 
-float A[100][100];
+int A[100][100];
 
 int main(){
 	srand(time(NULL));
 	for(int i=0;i<100;i++){
 		for(int j=0;j<100;j++){
-			float r=((float)rand()/(float)(RAND_MAX/30));
+			int r=(rand()%((int)sqrt(i*i+j*j+1)))+(sqrt(i*i+j*j));
 			r=r+1;
 			A[i][j] = r;
 		}
