@@ -9,3 +9,5 @@ cat <input>.txt|./sssp.out
 
 I have not taken the input according to the matrix you provided, but instead used an Adjacency Matrix.
 Sample_output is present in the code.
+### input in slowness matrix is taken in input.cpp and get converted in required input format for sssp.cu
+
