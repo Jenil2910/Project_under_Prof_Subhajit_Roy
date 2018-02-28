@@ -34,7 +34,7 @@ int main(int argc, char * * argv) {
     float** slow = new float*[_N];
     for(int i = 0; i < _N; ++i)
         slow[i] = new float[_M];
-    //input matrix is taken
+    //input slowness matrix is taken
     for(int i=0;i<_N;i++){
         for(int j=0;j<_M;j++){
             cin>>slow[i][j];
@@ -180,7 +180,7 @@ int main(int argc, char * * argv) {
 		source_indices_h[i]=source[i];
   }
   for(int i=0;i<nodes+1;i++){
-	destination_offsets_h[i]=destination_offset[i];
+	destination_offsets_h[i]=destination_offsets[i];
   }
 
   //Converting our variables to variables for nvgraph
