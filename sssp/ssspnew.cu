@@ -2,8 +2,8 @@
 #include<nvgraph.h>
 #include<bits/stdc++.h>
 #include<stdio.h>
-#define _N 100    //Number of rows
-#define _M 100    //Number of columns
+#define _N 1    //Number of rows
+#define _M 1    //Number of columns
 using namespace std;
 ///////////////////////////////////////////////////
 void check(nvgraphStatus_t status) {
@@ -144,10 +144,11 @@ int main(int argc, char * * argv) {
             }
         }
     }
+    cout<<count;
     destination_offset[nodes]=count;
 	//Converting Adjacency Matrix in input to required input for nvgraph
 
-
+	
     const size_t n = nodes, nnz = edges,    vertex_numsets = 1,    edge_numsets = 1;
     float weights_h[nnz];
     int destination_offsets_h[nodes+1];
