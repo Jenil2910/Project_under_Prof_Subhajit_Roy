@@ -203,7 +203,32 @@ int main(int argc, char * * argv) {
     //sssp_1_h is the array that contains the shortest distance of every vertex from the source.
 
 
-    ///////////////////////////////////////////////
+    //Error Calculation...
+    
+    float* Actual_seed = new float[(_N+1)*)(_M+1)];
+    float error=0;
+    
+    for(int i=0;i<((_N+1)*(_M+1));i++){
+    	cin>>Actual_seed[i];
+    }
+
+    for(int i=0;i<((_N+1)*(_M+1));i++){
+	error = error + (Actual_seed[i]-sssp_1_h[i])*(Actual_seed[i]-sssp_1_h[i]);
+    }
+    
+    error = error/((_N+1)*(_M+1));
+    error = sqrt(error);
+    
+    cout<<"RMS Error is : "<<error;
+    
+    
+
+
+
+
+
+ /* 
+	//////////// To be used to print actual path...  
     int parent[n];
     parent[0]=0;
     for(int i=1;i<n;i++){
@@ -229,8 +254,8 @@ int main(int argc, char * * argv) {
     }
     printf("0\n");
     }
-
     //Use DP for finding the exact path.
+*/
     //////////////////////////////////////////////
 
     free(sssp_1_h);
