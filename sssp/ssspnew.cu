@@ -144,7 +144,7 @@ int main(int argc, char * * argv) {
             }
         }
     }
-    cout<<count;
+    //cout<<count;
     destination_offset[nodes]=count;
 	//Converting Adjacency Matrix in input to required input for nvgraph
 
@@ -205,8 +205,8 @@ int main(int argc, char * * argv) {
 
     //Error Calculation...
     
-    float* Actual_seed = new float[(_N+1)*)(_M+1)];
-    float error=0;
+    float* Actual_seed = new float[(_N+1)*(_M+1)];
+    double error=0;
     
     for(int i=0;i<((_N+1)*(_M+1));i++){
     	cin>>Actual_seed[i];
@@ -219,7 +219,7 @@ int main(int argc, char * * argv) {
     error = error/((_N+1)*(_M+1));
     error = sqrt(error);
     
-    cout<<"RMS Error is : "<<error;
+    cout<<"RMS Error is : "<<error<<endl;
     
     
 
