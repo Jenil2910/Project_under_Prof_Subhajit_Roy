@@ -2,8 +2,9 @@
 #include<nvgraph.h>
 #include<bits/stdc++.h>
 #include<stdio.h>
-#define _N 100    //Number of rows
-#define _M 100    //Number of columns
+#define _N 2    //Number of rows
+#define _M 3    //Number of columns
+#define ROOT_TWO sqrt(2)
 using namespace std;
 ///////////////////////////////////////////////////
 void check(nvgraphStatus_t status) {
@@ -59,7 +60,7 @@ int main(int argc, char * * argv) {
             if(i>0){
                 //case 1.1
                 if(j>0){
-                    weights[count]=slow[i-1][j-1];
+                    weights[count]= ROOT_TWO * slow[i-1][j-1];
                     source[count]=(i-1)*(_M+1)+j-1;
                     count++;
                 }
@@ -79,7 +80,7 @@ int main(int argc, char * * argv) {
                 }
                 //case 1.3
                 if(j<_M){
-                    weights[count]=slow[i-1][j];
+                    weights[count]= ROOT_TWO * slow[i-1][j];
                     source[count]=(i-1)*(_M+1)+j+1;
                     count++;
                 }
@@ -117,7 +118,7 @@ int main(int argc, char * * argv) {
             if(i<_N){
                 //case 3.1
                 if(j>0){
-                    weights[count]=slow[i][j-1];
+                    weights[count]= ROOT_TWO * slow[i][j-1];
                     source[count]=(i+1)*(_M+1)+j-1;
                     count++;
                 }
@@ -137,7 +138,7 @@ int main(int argc, char * * argv) {
                 }
                 //case 3.3
                 if(j<_M){
-                    weights[count]=slow[i][j];
+                    weights[count]= ROOT_TWO * slow[i][j];
                     source[count]=(i+1)*(_M+1)+j+1;
                     count++;
                 }
@@ -208,18 +209,23 @@ int main(int argc, char * * argv) {
     float* Actual_seed = new float[(_N+1)*(_M+1)];
     double error=0;
     
-    for(int i=0;i<((_N+1)*(_M+1));i++){
+    /*for(int i=0;i<((_N+1)*(_M+1));i++){
     	cin>>Actual_seed[i];
-    }
+    }*/
 
-    for(int i=0;i<((_N+1)*(_M+1));i++){
-	error = error + (Actual_seed[i]-sssp_1_h[i])*(Actual_seed[i]-sssp_1_h[i]);
-    }
+    for(int i=0;i<(_M+1);i++){
+	//error = (Actual_seed[i]-sssp_1_h[i])*(Actual_seed[i]-sssp_1_h[i]);
+	cout<<sssp_1_h[i]<<" ";
+    }cout<<endl;
+    /*cout<<"ERROR : ";
+    for(int i=0;i<(_N+1);i++){
+	cout<<(Actual_seed[i]-sssp_1_h[i])*(Actual_seed[i]-sssp_1_h[i])<<" ";
+    }cout<<endl;
     
     error = error/((_N+1)*(_M+1));
-    error = sqrt(error);
+    error = sqrt(error);*/
     
-    cout<<"RMS Error is : "<<error<<endl;
+    //cout<<"RMS Error is : "<<error<<endl;
     
     
 
@@ -227,7 +233,7 @@ int main(int argc, char * * argv) {
 
 
 
- /* 
+/* 
 	//////////// To be used to print actual path...  
     int parent[n];
     parent[0]=0;
