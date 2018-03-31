@@ -12,8 +12,8 @@ void check(nvgraphStatus_t status) {
     exit(0);
   }
 }
-#define ROW 1000
-#define COL 1000
+#define ROW 500
+#define COL 4000
 float* time_finder(float **slow,int _N,int _M) {
     int edges=_N *( _M +1)+(_N+1)*_M+ _M * _N*2;
     int nodes=(_N+1)*(_M+1);
@@ -118,10 +118,10 @@ float* time_finder(float **slow,int _N,int _M) {
 	//Converting Adjacency Matrix in input to required input for nvgraph
 
 
-    const size_t n = nodes, nnz = edges*2,    vertex_numsets = 1,    edge_numsets = 1;
-    float weights_h[nnz];
-    int destination_offsets_h[nodes+1];
-    int source_indices_h[nnz];
+    int n = nodes, nnz = edges*2,    vertex_numsets = 1,    edge_numsets = 1;
+    float *weights_h=new float[nnz];
+    int *destination_offsets_h=new int[n+1];
+    int *source_indices_h=new int[nnz];
 
     for(int i=0;i<nnz;i++){
     	weights_h[i]=weights[i];
@@ -130,7 +130,9 @@ float* time_finder(float **slow,int _N,int _M) {
     for(int i=0;i<nodes+1;i++){
     destination_offsets_h[i]=destination_offset[i];
     }
-
+    delete weights;
+    delete destination_offset;
+    delete source;
     //Converting our variables to variables for nvgraph
 
     float * sssp_1_h;
@@ -144,10 +146,10 @@ float* time_finder(float **slow,int _N,int _M) {
 
 
     // Init host data
-    sssp_1_h = (float * ) malloc(n * sizeof(float));
+    sssp_1_h = new float[n];
     vertex_dim = (void * * ) malloc(vertex_numsets * sizeof(void * ));
-    vertex_dimT = (cudaDataType_t * ) malloc(vertex_numsets * sizeof(cudaDataType_t));
-    CSC_input = (nvgraphCSCTopology32I_t) malloc(sizeof(struct nvgraphCSCTopology32I_st));
+    vertex_dimT=new cudaDataType_t[vertex_numsets];
+    CSC_input= (nvgraphCSCTopology32I_t)new nvgraphCSCTopology32I_t;
     vertex_dim[0] = (void * ) sssp_1_h;
     vertex_dimT[0] = CUDA_R_32F;
 
@@ -168,10 +170,12 @@ float* time_finder(float **slow,int _N,int _M) {
 
 
     float* Actual_seed = new float[(_N+1)*(_M+1)];
-    double error=0;
+    delete weights_h;
+    delete destination_offsets_h;
+    delete source_indices_h;
     free(vertex_dim);
-    free(vertex_dimT);
-    free(CSC_input);
+    delete vertex_dimT;
+    delete CSC_input;
     check(nvgraphDestroyGraphDescr(handle, graph));
     check(nvgraphDestroy(handle));
     return sssp_1_h;
@@ -192,7 +196,7 @@ int main(){
     tpck[i]=2;
 
   }
-  float sum=0;
+  double sum=0;
   for(int i=0;i<m+1;i++){
     cout<<out[i]<<" ";
     sum=sum+(tpck[i]-out[i])*(tpck[i]-out[i]);
