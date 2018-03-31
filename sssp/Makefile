@@ -12,3 +12,7 @@ all: ${OUT}
 pull:
 	cd ..
 	git pull ${ORIGIN} ${BRANCH}
+
+push:
+	cd  ..
+	git push ${ORIGIN} ${BRANCH}
