@@ -147,7 +147,7 @@ float* time_finder(float **slow,int _N,int _M) {
 
     // Init host data
     sssp_1_h = new float[n];
-    vertex_dim = (void * * ) malloc(vertex_numsets * sizeof(void * ));
+    vertex_dim = new void*[vertex_numsets];
     vertex_dimT=new cudaDataType_t[vertex_numsets];
     CSC_input= (nvgraphCSCTopology32I_t)new nvgraphCSCTopology32I_t;
     vertex_dim[0] = (void * ) sssp_1_h;
@@ -183,9 +183,9 @@ float* time_finder(float **slow,int _N,int _M) {
 int main(){
   float ** inp;
   int n=ROW,m=COL;
-  inp=(float**)malloc(sizeof(float*)*n);
+  inp=new float*[n];
   for(int i=0;i<n;i++){
-    inp[i]=(float*)malloc(sizeof(float)*m);
+    inp[i]=new float[m];
     for(int j=0;j<m;j++){
       inp[i][j]=1;
     }

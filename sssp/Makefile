@@ -1,5 +1,5 @@
 CC = nvcc
-FLAG = -lnvgraph
+FLAG = -lnvgraph -g
 OUT = sssp_to_be_given.out
 ORIGIN = origin
 BRANCH = master
@@ -16,3 +16,7 @@ pull:
 push:
 	cd  ..
 	git push ${ORIGIN} ${BRANCH}
+
+clean:
+	cd ..
+	rm -rf *.out
