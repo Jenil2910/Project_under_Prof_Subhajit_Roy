@@ -15,6 +15,8 @@ pull:
 
 push:
 	cd  ..
+	git add .
+	git commit -a
 	git push ${ORIGIN} ${BRANCH}
 
 clean:
