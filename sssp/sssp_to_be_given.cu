@@ -25,28 +25,23 @@ float* time_finder(float **slow,int _N,int _M) {
         for(int j=0;j<= _M;j++){
             int index=i*(_M+1)+j;
             destination_offset[index]=count;
+            int i_m,i_p,j_m,j_p;
+            i_m=(i-1>0?i-1:0);
+            i_p=(i>_N-1?_N-1:i);
+            j_m=(j-1>0?j-1:0);
+            j_p=(j>_M-1?_M-1:j);
             //case 1
             if(i>0){
                 //case 1.1
                 if(j>0){
-                    weights[count]= ROOT_TWO * slow[i-1][j-1];
-                    source[count]=(i-1)*(_M+1)+j-1;
+                    weights[count]= ROOT_TWO * slow[i_m][j_m];
+                    source[count]=(i-1)*(_M+1)+j_m;
                     count++;
                 }
                 //case 1.2
-                if(j>0&&j<_M){
-                    weights[count]=(slow[i-1][j-1]+slow[i-1][j])/2.0;
+                    weights[count]=(slow[i_m][j_m]+slow[i_m][j_p])/2.0;
                     source[count]=(i-1)*(_M+1)+j;
                     count++;
-                }else if(j==_M){
-                    weights[count]=slow[i-1][j-1];
-                    source[count]=(i-1)*(_M+1)+j;
-                    count++;
-                }else{//j==0
-                    weights[count]=slow[i-1][j];
-                    source[count]=(i-1)*(_M+1)+j;
-                    count++;
-                }
                 //case 1.3
                 if(j<_M){
                     weights[count]= ROOT_TWO * slow[i-1][j];
@@ -56,33 +51,17 @@ float* time_finder(float **slow,int _N,int _M) {
             }
             //case 2
             //case 2.1
-            if(i>0&&j>0&&i<_N){
-                weights[count]=(slow[i-1][j-1]+slow[i][j-1])/2.0;
+            if(j>0){
+                weights[count]=(slow[i_m][j_m]+slow[i_p][j_m])/2.0;
                 source[count]=(i)*(_M+1)+j-1;
                 count++;
-            }else if(i==0&&j>0){
-                weights[count]=slow[i][j-1];
-                source[count]=(i)*(_M+1)+j-1;
-                count++;
-            }else if(i==_N&&j>0){
-                weights[count]=slow[i-1][j-1];
-                source[count]=(i)*(_M+1)+j-1;
-                count++;
-            }
+              }
             //case 2.2
-            if(i>0&&j<_M&&i<_N){
-                weights[count]=(slow[i-1][j]+slow[i][j])/2.0;
+            if(j<_M){
+                weights[count]=(slow[i_m][j_p]+slow[i_p][j_p])/2.0;
                 source[count]=(i)*(_M+1)+j+1;
                 count++;
-            }else if(i==0&&j<_M){
-                weights[count]=slow[i][j];
-                source[count]=(i)*(_M+1)+j+1;
-                count++;
-            }else if(i==_N&&j<_M){
-                weights[count]=slow[i-1][j];
-                source[count]=(i)*(_M+1)+j+1;
-                count++;
-            }
+              }
             //case 3
             if(i<_N){
                 //case 3.1
@@ -92,19 +71,9 @@ float* time_finder(float **slow,int _N,int _M) {
                     count++;
                 }
                 //case 3.2
-                if(j>0&&j<_M){
-                    weights[count]=(slow[i][j-1]+slow[i][j])/2.0;
+                    weights[count]=(slow[i_p][j_m]+slow[i_p][j_p])/2.0;
                     source[count]=(i+1)*(_M+1)+j;
                     count++;
-                }else if(j==_M){
-                    weights[count]=slow[i][j-1];
-                    source[count]=(i+1)*(_M+1)+j;
-                    count++;
-                }else{//j==0
-                    weights[count]=slow[i][j];
-                    source[count]=(i+1)*(_M+1)+j;
-                    count++;
-                }
                 //case 3.3
                 if(j<_M){
                     weights[count]= ROOT_TWO * slow[i][j];
