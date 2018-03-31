@@ -12,7 +12,8 @@ void check(nvgraphStatus_t status) {
     exit(0);
   }
 }
-
+#define ROW 1000
+#define COL 1000
 float* time_finder(float **slow,int _N,int _M) {
     int edges=_N *( _M +1)+(_N+1)*_M+ _M * _N*2;
     int nodes=(_N+1)*(_M+1);
@@ -177,7 +178,7 @@ float* time_finder(float **slow,int _N,int _M) {
 }
 int main(){
   float ** inp;
-  int n=10,m=20;
+  int n=ROW,m=COL;
   inp=(float**)malloc(sizeof(float*)*n);
   for(int i=0;i<n;i++){
     inp[i]=(float*)malloc(sizeof(float)*m);
@@ -186,14 +187,16 @@ int main(){
     }
   }
   float tpck[m+1];
-  float* out=time_finder(inp,10,20);
+  float* out=time_finder(inp,n,m);
   for(int i=0;i<m+1;i++){
     tpck[i]=2;
+
   }
   float sum=0;
   for(int i=0;i<m+1;i++){
+    cout<<out[i]<<" ";
     sum=sum+(tpck[i]-out[i])*(tpck[i]-out[i]);
   }
-  cout<<sum;
+  cout<<endl<<sum<<endl;
   return 0;
 }
