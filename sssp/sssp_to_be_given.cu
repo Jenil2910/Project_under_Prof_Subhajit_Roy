@@ -14,7 +14,7 @@ void check(nvgraphStatus_t status) {
 }
 #define ROW 500
 #define COL 4000
-int n=(_N+1)*(_M+1), vertex_numsets = 1, edge_numsets = 1, nnz=_N *( _M +1)+(_N+1)*_M+ _M * _N*2*2;//nnz=edges*2;
+int n=(ROW+1)*(COL+1), vertex_numsets = 1, edge_numsets = 1, nnz=ROW *( COL +1)+(ROW+1)*COL+ COL * ROW*2*2;//nnz=edges*2;
 float *weights_h=new float[nnz];
 int *destination_offsets_h=new int[n+1];
 int *source_indices_h=new int[nnz];
