@@ -1,12 +1,8 @@
-This code uses nvgraph library from nvidia and finds the shortest possible path distance from source vertex to every node, and then it uses Dynamic Programming to get the actual path.
-
-
-
-sssp.out is the executable file.
-
-if we want to provide different input, put it into a .txt file and then run:
-cat <input>.txt|./sssp.out
-
-### input in slowness matrix is taken in input.cpp and get converted in required input format for sssp.cu
-In the input file _N, _M are number of rows and columns 
-
+###  How to use this code??
+To compile the sssp_to_be_given.cu use the following:-
+`make all`
+or `nvcc -lnvgraph -g sssp_to_be_given.cu`
+###Input output format of sssp_to_be_given.cu.
+time_finder()=> is the function that takes slowness value matrix, n(rows) and m(columns).
+And output a 1D vector whose ith index is the time required to go from source node (0,0) to (0,i).
+0<=i<=n   

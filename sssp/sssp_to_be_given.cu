@@ -1,8 +1,5 @@
-#include<iostream>
 #include<nvgraph.h>
 #include<bits/stdc++.h>
-#include<stdio.h>
-
 #define ROOT_TWO sqrt(2)
 using namespace std;
 ///////////////////////////////////////////////////
@@ -15,11 +12,11 @@ void check(nvgraphStatus_t status) {
 #define ROW 500
 #define COL 4000
 int n=(ROW+1)*(COL+1), vertex_numsets = 1, edge_numsets = 1, nnz=ROW *( COL +1)+(ROW+1)*COL+ COL * ROW*2*2;//nnz=edges*2;
-float *weights_h=new float[nnz];
+double *weights_h=new double[nnz];
 int *destination_offsets_h=new int[n+1];
 int *source_indices_h=new int[nnz];
 
-float* time_finder(float **slow,int _N,int _M) {
+double* time_finder(double **slow,int _N,int _M) {
     int count=0;
     for(int i=0;i<= _N;i++){
         for(int j=0;j<= _M;j++){
@@ -86,7 +83,7 @@ float* time_finder(float **slow,int _N,int _M) {
     destination_offsets_h[n]=count;
 	//Converting Adjacency Matrix in input to required input for nvgraph
 
-    float * sssp_1_h;
+    double * sssp_1_h;
     void * * vertex_dim; // nvgraph variables _h for host data.
     nvgraphStatus_t status;
     nvgraphHandle_t handle;
@@ -98,7 +95,7 @@ float* time_finder(float **slow,int _N,int _M) {
 
     // Init host data
     /* *weights_h, *destination_offsets_h, *source_indices_h, n, nnz, vertex_numsets , edge_numsets already defined */
-    sssp_1_h = new float[n];
+    sssp_1_h = new double[n];
     vertex_dim = new void*[vertex_numsets];
     vertex_dimT=new cudaDataType_t[vertex_numsets];
     CSC_input= (nvgraphCSCTopology32I_t)new nvgraphCSCTopology32I_t;
@@ -121,7 +118,7 @@ float* time_finder(float **slow,int _N,int _M) {
     check(nvgraphGetVertexData(handle, graph, (void * ) sssp_1_h, 0));
 
 
-    float* Actual_seed = new float[(_N+1)*(_M+1)];
+    double* Actual_seed = new double[(_N+1)*(_M+1)];
     delete weights_h;
     delete destination_offsets_h;
     delete source_indices_h;
@@ -133,17 +130,17 @@ float* time_finder(float **slow,int _N,int _M) {
     return sssp_1_h;
 }
 int main(){
-  float ** inp;
+  double ** inp;
   int n=ROW,m=COL;
-  inp=new float*[n];
+  inp=new double*[n];
   for(int i=0;i<n;i++){
-    inp[i]=new float[m];
+    inp[i]=new double[m];
     for(int j=0;j<m;j++){
       inp[i][j]=1;
     }
   }
-  float tpck[m+1];
-  float* out=time_finder(inp,n,m);
+  double tpck[m+1];
+  double* out=time_finder(inp,n,m);
   for(int i=0;i<m+1;i++){
     tpck[i]=2;
 
