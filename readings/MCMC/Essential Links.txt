@@ -3,3 +3,6 @@ https://github.com/akashks1998/Project_under_Prof_Subhajit_Roy/tree/master/MCMC
 
 Course Page:
 http://www.math.chalmers.se/Stat/Grundutb/Chalmers/TMS081/oldpage/
+
+Lecture:
+http://www.math.chalmers.se/Stat/Grundutb/Chalmers/TMS081/oldpage/Lecture_notes/lecture1.pdf
