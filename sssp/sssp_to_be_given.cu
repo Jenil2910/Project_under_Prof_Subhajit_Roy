@@ -14,14 +14,17 @@ void check(nvgraphStatus_t status) {
 }
 #define ROW 500
 #define COL 4000
-float *weights_h=new float[nnz];
-int *destination_offsets_h=new int[n+1];
-int *source_indices_h=new int[nnz];
 int n, nnz, vertex_numsets = 1, edge_numsets = 1;
+float *weights_h;
+int *destination_offsets_h;
+int *source_indices_h;
 
 float* time_finder(float **slow,int _N,int _M) {
     nnz=_N *( _M +1)+(_N+1)*_M+ _M * _N*2*2;//nnz=edges*2
     n=(_N+1)*(_M+1);
+    *weights_h=new float[nnz];
+    *destination_offsets_h=new int[n+1];
+    *source_indices_h=new int[nnz];
     int count=0;
     for(int i=0;i<= _N;i++){
         for(int j=0;j<= _M;j++){
