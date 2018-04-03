@@ -14,17 +14,19 @@ void check(nvgraphStatus_t status) {
 }
 #define ROW 500
 #define COL 4000
+float *weights_h=new float[nnz];
+int *destination_offsets_h=new int[n+1];
+int *source_indices_h=new int[nnz];
+int n, nnz, vertex_numsets = 1, edge_numsets = 1;
+
 float* time_finder(float **slow,int _N,int _M) {
-    int edges=_N *( _M +1)+(_N+1)*_M+ _M * _N*2;
-    int nodes=(_N+1)*(_M+1);
-    float* weights=new float[edges*2];
-    int* destination_offset=new int[nodes+1];
-    int* source=new int[edges*2];
+    nnz=_N *( _M +1)+(_N+1)*_M+ _M * _N*2*2;//nnz=edges*2
+    n=(_N+1)*(_M+1);
     int count=0;
     for(int i=0;i<= _N;i++){
         for(int j=0;j<= _M;j++){
             int index=i*(_M+1)+j;
-            destination_offset[index]=count;
+            destination_offsets_h[index]=count;
             int i_m,i_p,j_m,j_p;
             i_m=(i-1>0?i-1:0);
             i_p=(i>_N-1?_N-1:i);
@@ -34,75 +36,57 @@ float* time_finder(float **slow,int _N,int _M) {
             if(i>0){
                 //case 1.1
                 if(j>0){
-                    weights[count]= ROOT_TWO * slow[i_m][j_m];
-                    source[count]=(i-1)*(_M+1)+j_m;
+                    weight_h[count]= ROOT_TWO * slow[i_m][j_m];
+                    source_indices_h[count]=(i-1)*(_M+1)+j_m;
                     count++;
                 }
                 //case 1.2
-                    weights[count]=(slow[i_m][j_m]+slow[i_m][j_p])/2.0;
-                    source[count]=(i-1)*(_M+1)+j;
+                    weight_h[count]=(slow[i_m][j_m]+slow[i_m][j_p])/2.0;
+                    source_indices_h[count]=(i-1)*(_M+1)+j;
                     count++;
                 //case 1.3
                 if(j<_M){
-                    weights[count]= ROOT_TWO * slow[i-1][j];
-                    source[count]=(i-1)*(_M+1)+j+1;
+                    weight_h[count]= ROOT_TWO * slow[i-1][j];
+                    source_indices_h[count]=(i-1)*(_M+1)+j+1;
                     count++;
                 }
             }
             //case 2
             //case 2.1
             if(j>0){
-                weights[count]=(slow[i_m][j_m]+slow[i_p][j_m])/2.0;
-                source[count]=(i)*(_M+1)+j-1;
+                weight_h[count]=(slow[i_m][j_m]+slow[i_p][j_m])/2.0;
+                source_indices_h[count]=(i)*(_M+1)+j-1;
                 count++;
               }
             //case 2.2
             if(j<_M){
-                weights[count]=(slow[i_m][j_p]+slow[i_p][j_p])/2.0;
-                source[count]=(i)*(_M+1)+j+1;
+                weight_h[count]=(slow[i_m][j_p]+slow[i_p][j_p])/2.0;
+                source_indices_h[count]=(i)*(_M+1)+j+1;
                 count++;
               }
             //case 3
             if(i<_N){
                 //case 3.1
                 if(j>0){
-                    weights[count]= ROOT_TWO * slow[i][j-1];
-                    source[count]=(i+1)*(_M+1)+j-1;
+                    weight_h[count]= ROOT_TWO * slow[i][j-1];
+                    source_indices_h[count]=(i+1)*(_M+1)+j-1;
                     count++;
                 }
                 //case 3.2
-                    weights[count]=(slow[i_p][j_m]+slow[i_p][j_p])/2.0;
-                    source[count]=(i+1)*(_M+1)+j;
+                    weight_h[count]=(slow[i_p][j_m]+slow[i_p][j_p])/2.0;
+                    source_indices_h[count]=(i+1)*(_M+1)+j;
                     count++;
                 //case 3.3
                 if(j<_M){
-                    weights[count]= ROOT_TWO * slow[i][j];
-                    source[count]=(i+1)*(_M+1)+j+1;
+                    weight_h[count]= ROOT_TWO * slow[i][j];
+                    source_indices_h[count]=(i+1)*(_M+1)+j+1;
                     count++;
                 }
             }
         }
     }
-    destination_offset[nodes]=count;
+    destination_offsets_h[nodes]=count;
 	//Converting Adjacency Matrix in input to required input for nvgraph
-
-
-    int n = nodes, nnz = edges*2,    vertex_numsets = 1,    edge_numsets = 1;
-    float *weights_h=new float[nnz];
-    int *destination_offsets_h=new int[n+1];
-    int *source_indices_h=new int[nnz];
-
-    for(int i=0;i<nnz;i++){
-    	weights_h[i]=weights[i];
-    	source_indices_h[i]=source[i];
-    }
-    for(int i=0;i<nodes+1;i++){
-    destination_offsets_h[i]=destination_offset[i];
-    }
-    delete weights;
-    delete destination_offset;
-    delete source;
-    //Converting our variables to variables for nvgraph
 
     float * sssp_1_h;
     void * * vertex_dim; // nvgraph variables _h for host data.
@@ -115,6 +99,7 @@ float* time_finder(float **slow,int _N,int _M) {
 
 
     // Init host data
+    /* *weights_h, *destination_offsets_h, *source_indices_h, n, nnz, vertex_numsets , edge_numsets already defined */
     sssp_1_h = new float[n];
     vertex_dim = new void*[vertex_numsets];
     vertex_dimT=new cudaDataType_t[vertex_numsets];
@@ -142,7 +127,7 @@ float* time_finder(float **slow,int _N,int _M) {
     delete weights_h;
     delete destination_offsets_h;
     delete source_indices_h;
-    free(vertex_dim);
+    delete vertex_dim;
     delete vertex_dimT;
     delete CSC_input;
     check(nvgraphDestroyGraphDescr(handle, graph));
