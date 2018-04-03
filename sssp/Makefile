@@ -10,13 +10,13 @@ all: ${OUT}
 	${CC} ${FLAG} $*.cu -o $*.out
 
 pull:
-	cd ..
+	cd .. && \
 	git pull ${ORIGIN} ${BRANCH}
 
 push:
-	cd  ..
-	git add .
-	git commit -a
+	cd  .. && \
+	git add . && \
+	git commit -a && \
 	git push ${ORIGIN} ${BRANCH}
 
 clean:
