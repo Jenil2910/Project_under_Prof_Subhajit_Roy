@@ -12,7 +12,8 @@ void check(nvgraphStatus_t status) {
     exit(0);
   }
 }
-
+#define ROW 500
+#define COL 4000
 float* time_finder(float **slow,int _N,int _M) {
     int edges=_N *( _M +1)+(_N+1)*_M+ _M * _N*2;
     int nodes=(_N+1)*(_M+1);
@@ -24,28 +25,23 @@ float* time_finder(float **slow,int _N,int _M) {
         for(int j=0;j<= _M;j++){
             int index=i*(_M+1)+j;
             destination_offset[index]=count;
+            int i_m,i_p,j_m,j_p;
+            i_m=(i-1>0?i-1:0);
+            i_p=(i>_N-1?_N-1:i);
+            j_m=(j-1>0?j-1:0);
+            j_p=(j>_M-1?_M-1:j);
             //case 1
             if(i>0){
                 //case 1.1
                 if(j>0){
-                    weights[count]= ROOT_TWO * slow[i-1][j-1];
-                    source[count]=(i-1)*(_M+1)+j-1;
+                    weights[count]= ROOT_TWO * slow[i_m][j_m];
+                    source[count]=(i-1)*(_M+1)+j_m;
                     count++;
                 }
                 //case 1.2
-                if(j>0&&j<_M){
-                    weights[count]=(slow[i-1][j-1]+slow[i-1][j])/2.0;
+                    weights[count]=(slow[i_m][j_m]+slow[i_m][j_p])/2.0;
                     source[count]=(i-1)*(_M+1)+j;
                     count++;
-                }else if(j==_M){
-                    weights[count]=slow[i-1][j-1];
-                    source[count]=(i-1)*(_M+1)+j;
-                    count++;
-                }else{//j==0
-                    weights[count]=slow[i-1][j];
-                    source[count]=(i-1)*(_M+1)+j;
-                    count++;
-                }
                 //case 1.3
                 if(j<_M){
                     weights[count]= ROOT_TWO * slow[i-1][j];
@@ -55,33 +51,17 @@ float* time_finder(float **slow,int _N,int _M) {
             }
             //case 2
             //case 2.1
-            if(i>0&&j>0&&i<_N){
-                weights[count]=(slow[i-1][j-1]+slow[i][j-1])/2.0;
+            if(j>0){
+                weights[count]=(slow[i_m][j_m]+slow[i_p][j_m])/2.0;
                 source[count]=(i)*(_M+1)+j-1;
                 count++;
-            }else if(i==0&&j>0){
-                weights[count]=slow[i][j-1];
-                source[count]=(i)*(_M+1)+j-1;
-                count++;
-            }else if(i==_N&&j>0){
-                weights[count]=slow[i-1][j-1];
-                source[count]=(i)*(_M+1)+j-1;
-                count++;
-            }
+              }
             //case 2.2
-            if(i>0&&j<_M&&i<_N){
-                weights[count]=(slow[i-1][j]+slow[i][j])/2.0;
+            if(j<_M){
+                weights[count]=(slow[i_m][j_p]+slow[i_p][j_p])/2.0;
                 source[count]=(i)*(_M+1)+j+1;
                 count++;
-            }else if(i==0&&j<_M){
-                weights[count]=slow[i][j];
-                source[count]=(i)*(_M+1)+j+1;
-                count++;
-            }else if(i==_N&&j<_M){
-                weights[count]=slow[i-1][j];
-                source[count]=(i)*(_M+1)+j+1;
-                count++;
-            }
+              }
             //case 3
             if(i<_N){
                 //case 3.1
@@ -91,19 +71,9 @@ float* time_finder(float **slow,int _N,int _M) {
                     count++;
                 }
                 //case 3.2
-                if(j>0&&j<_M){
-                    weights[count]=(slow[i][j-1]+slow[i][j])/2.0;
+                    weights[count]=(slow[i_p][j_m]+slow[i_p][j_p])/2.0;
                     source[count]=(i+1)*(_M+1)+j;
                     count++;
-                }else if(j==_M){
-                    weights[count]=slow[i][j-1];
-                    source[count]=(i+1)*(_M+1)+j;
-                    count++;
-                }else{//j==0
-                    weights[count]=slow[i][j];
-                    source[count]=(i+1)*(_M+1)+j;
-                    count++;
-                }
                 //case 3.3
                 if(j<_M){
                     weights[count]= ROOT_TWO * slow[i][j];
@@ -117,10 +87,10 @@ float* time_finder(float **slow,int _N,int _M) {
 	//Converting Adjacency Matrix in input to required input for nvgraph
 
 
-    const size_t n = nodes, nnz = edges*2,    vertex_numsets = 1,    edge_numsets = 1;
-    float weights_h[nnz];
-    int destination_offsets_h[nodes+1];
-    int source_indices_h[nnz];
+    int n = nodes, nnz = edges*2,    vertex_numsets = 1,    edge_numsets = 1;
+    float *weights_h=new float[nnz];
+    int *destination_offsets_h=new int[n+1];
+    int *source_indices_h=new int[nnz];
 
     for(int i=0;i<nnz;i++){
     	weights_h[i]=weights[i];
@@ -129,7 +99,9 @@ float* time_finder(float **slow,int _N,int _M) {
     for(int i=0;i<nodes+1;i++){
     destination_offsets_h[i]=destination_offset[i];
     }
-
+    delete weights;
+    delete destination_offset;
+    delete source;
     //Converting our variables to variables for nvgraph
 
     float * sssp_1_h;
@@ -143,10 +115,10 @@ float* time_finder(float **slow,int _N,int _M) {
 
 
     // Init host data
-    sssp_1_h = (float * ) malloc(n * sizeof(float));
-    vertex_dim = (void * * ) malloc(vertex_numsets * sizeof(void * ));
-    vertex_dimT = (cudaDataType_t * ) malloc(vertex_numsets * sizeof(cudaDataType_t));
-    CSC_input = (nvgraphCSCTopology32I_t) malloc(sizeof(struct nvgraphCSCTopology32I_st));
+    sssp_1_h = new float[n];
+    vertex_dim = new void*[vertex_numsets];
+    vertex_dimT=new cudaDataType_t[vertex_numsets];
+    CSC_input= (nvgraphCSCTopology32I_t)new nvgraphCSCTopology32I_t;
     vertex_dim[0] = (void * ) sssp_1_h;
     vertex_dimT[0] = CUDA_R_32F;
 
@@ -167,33 +139,37 @@ float* time_finder(float **slow,int _N,int _M) {
 
 
     float* Actual_seed = new float[(_N+1)*(_M+1)];
-    double error=0;
+    delete weights_h;
+    delete destination_offsets_h;
+    delete source_indices_h;
     free(vertex_dim);
-    free(vertex_dimT);
-    free(CSC_input);
+    delete vertex_dimT;
+    delete CSC_input;
     check(nvgraphDestroyGraphDescr(handle, graph));
     check(nvgraphDestroy(handle));
     return sssp_1_h;
 }
 int main(){
   float ** inp;
-  int n=10,m=20;
-  inp=(float**)malloc(sizeof(float*)*n);
+  int n=ROW,m=COL;
+  inp=new float*[n];
   for(int i=0;i<n;i++){
-    inp[i]=(float*)malloc(sizeof(float)*m);
+    inp[i]=new float[m];
     for(int j=0;j<m;j++){
       inp[i][j]=1;
     }
   }
   float tpck[m+1];
-  float* out=time_finder(inp,10,20);
+  float* out=time_finder(inp,n,m);
   for(int i=0;i<m+1;i++){
     tpck[i]=2;
+
   }
-  float sum=0;
+  double sum=0;
   for(int i=0;i<m+1;i++){
+    cout<<out[i]<<" ";
     sum=sum+(tpck[i]-out[i])*(tpck[i]-out[i]);
   }
-  cout<<sum;
+  cout<<endl<<sum<<endl;
   return 0;
 }
