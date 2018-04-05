@@ -16,7 +16,7 @@ double *weights_h=new double[nnz];
 int *destination_offsets_h=new int[n+1];
 int *source_indices_h=new int[nnz];
 
-double* time_finder(double **slow,int _N,int _M) {
+double* time_finder(double *slow,int _N,int _M) {
     int count=0;
     for(int i=0;i<= _N;i++){
         for(int j=0;j<= _M;j++){
@@ -31,17 +31,17 @@ double* time_finder(double **slow,int _N,int _M) {
             if(i>0){
                 //case 1.1
                 if(j>0){
-                    weights_h[count]= ROOT_TWO * slow[i_m][j_m];
+                    weights_h[count]= ROOT_TWO * slow[ i_m*_M + j_m];
                     source_indices_h[count]=(i-1)*(_M+1)+j_m;
                     count++;
                 }
                 //case 1.2
-                    weights_h[count]=(slow[i_m][j_m]+slow[i_m][j_p])/2.0;
+                    weights_h[count]=(slow[i_m*_M + j_m]+slow[i_m*_M + j_p])/2.0;
                     source_indices_h[count]=(i-1)*(_M+1)+j;
                     count++;
                 //case 1.3
                 if(j<_M){
-                    weights_h[count]= ROOT_TWO * slow[i-1][j];
+                    weights_h[count]= ROOT_TWO * slow[i-1*_M + j];
                     source_indices_h[count]=(i-1)*(_M+1)+j+1;
                     count++;
                 }
@@ -49,13 +49,13 @@ double* time_finder(double **slow,int _N,int _M) {
             //case 2
             //case 2.1
             if(j>0){
-                weights_h[count]=(slow[i_m][j_m]+slow[i_p][j_m])/2.0;
+                weights_h[count]=(slow[i_m*_M + j_m]+slow[i_p*_M +j_m])/2.0;
                 source_indices_h[count]=(i)*(_M+1)+j-1;
                 count++;
               }
             //case 2.2
             if(j<_M){
-                weights_h[count]=(slow[i_m][j_p]+slow[i_p][j_p])/2.0;
+                weights_h[count]=(slow[i_m*_M + j_p]+slow[i_p*_M + j_p])/2.0;
                 source_indices_h[count]=(i)*(_M+1)+j+1;
                 count++;
               }
@@ -63,17 +63,17 @@ double* time_finder(double **slow,int _N,int _M) {
             if(i<_N){
                 //case 3.1
                 if(j>0){
-                    weights_h[count]= ROOT_TWO * slow[i][j-1];
+                    weights_h[count]= ROOT_TWO * slow[i*_M + j-1];
                     source_indices_h[count]=(i+1)*(_M+1)+j-1;
                     count++;
                 }
                 //case 3.2
-                    weights_h[count]=(slow[i_p][j_m]+slow[i_p][j_p])/2.0;
+                    weights_h[count]=(slow[i_p*_M + j_m]+slow[i_p*_M + j_p])/2.0;
                     source_indices_h[count]=(i+1)*(_M+1)+j;
                     count++;
                 //case 3.3
                 if(j<_M){
-                    weights_h[count]= ROOT_TWO * slow[i][j];
+                    weights_h[count]= ROOT_TWO * slow[i*_M + j];
                     source_indices_h[count]=(i+1)*(_M+1)+j+1;
                     count++;
                 }
@@ -130,20 +130,18 @@ double* time_finder(double **slow,int _N,int _M) {
     return sssp_1_h;
 }
 int main(){
-  double ** inp;
+  double * inp;
   int n=ROW,m=COL;
-  inp=new double*[n];
+  inp=new double[n*m];
   for(int i=0;i<n;i++){
-    inp[i]=new double[m];
     for(int j=0;j<m;j++){
-      inp[i][j]=1;
+      inp[i*m+j]=1;
     }
   }
   double tpck[m+1];
   double* out=time_finder(inp,n,m);
   for(int i=0;i<m+1;i++){
     tpck[i]=2;
-
   }
   double sum=0;
   for(int i=0;i<m+1;i++){
