@@ -22,6 +22,12 @@ pull:
 	cd .. && \
 	git pull ${ORIGIN} ${BRANCH}
 
+edit:
+	nano ${CU}
+
+debug:
+	gdb ${OUT}
+
 push:
 	cd  .. && \
 	git add . && \
