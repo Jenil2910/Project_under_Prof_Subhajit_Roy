@@ -1,5 +1,6 @@
 #include <nvgraph.h>
 #include <bits/stdc++.h>
+#include<cuda.h>
 #define ROOT_TWO sqrt(2)
 using namespace std;
 ///////////////////////////////////////////////////
