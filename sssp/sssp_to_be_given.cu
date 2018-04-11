@@ -12,7 +12,7 @@ void check(nvgraphStatus_t status) {
 }
 #define ROW 3
 #define COL 3
-void time_finder(float* out,float *slow,int _N,int _M,float** actualSeed) {
+void time_finder(float* out,float *slow,int _N,int _M,float** A) {
         int n=(_N+1)*(_M+1), vertex_numsets = 1, edge_numsets = 1, nnz=(_N *( _M +1)+(_N+1)*_M+ _M*_N*2)*2; //nnz=edges*2;
         float *weights_h=new float[nnz];
         float* sssp_1_h;
@@ -159,12 +159,12 @@ void time_finder(float* out,float *slow,int _N,int _M,float** actualSeed) {
                         box2=(box2==_M?_M-1:box2);
                         int box=box1*_M+box2;
 
-                        //actualSeed[box/_M][box%_M];
+                        //A[box/_M][box%_M];
                         int diff=node-parent[node];
                         if(diff==1 || diff==-1 || diff==_M+1 || diff==-(_M+1)) {
-                                actualSeed[i][ box]+=1;
+                                A[i][ box]+=1;
                         }else{
-                                actualSeed[i][ box]+=ROOT_TWO;
+                                A[i][ box]+=ROOT_TWO;
                         }
                         node=parent[node];
                 }
@@ -202,20 +202,20 @@ int main(){
         inp[6]=110;
         inp[7]=103;
         inp[8]=0;
-        float** actualSeed;
-        actualSeed=new float*[m+1];
+        float** A;
+        A=new float*[m+1];
         for(int i=0; i<m+1; i++) {
-                actualSeed[i]=new float[m*n];
+                A[i]=new float[m*n];
         }
         for(int i=0; i<m+1; i++) {
                 for(int j=0; j<m*n; j++) {
-                        actualSeed[i][j]=0;
+                        A[i][j]=0;
                 }
         }
         //float tpck[m+1];
         float* out;
         out=new float[m+1];
-        time_finder(out,inp,n,m,actualSeed);
+        time_finder(out,inp,n,m,A);
         /*for(int i=0; i<m+1; i++) {
                 tpck[i]=i;
            }
@@ -229,7 +229,7 @@ int main(){
         cout<<"-------------"<<endl;
         for(int i=0;i<m+1;i++){
                       for(int j=0;j<m*n;j++){
-                              cout<<actualSeed[i][j]<<" ";
+                              cout<<A[i][j]<<" ";
                       }cout<<endl;
               }cout<<endl;
         return 0;
